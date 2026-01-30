@@ -18,8 +18,8 @@ interface Business {
   address: string
   phone?: string | null
   website?: string | null
-  latitude: number
-  longitude: number
+  latitude: number | null
+  longitude: number | null
   rating?: number | null
   reviewCount?: number | null
 }

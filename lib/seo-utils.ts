@@ -120,10 +120,10 @@ export function generateBusinessId(name: string, address: string): string {
 export function calculateBusinessQualityScore(business: {
   name?: string
   address?: string
-  phone?: string
-  website?: string
-  rating?: number
-  reviewCount?: number
+  phone?: string | null
+  website?: string | null
+  rating?: number | null
+  reviewCount?: number | null
 }): number {
   let score = 0
   

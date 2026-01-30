@@ -9,10 +9,10 @@ export interface BusinessData {
   address: string
   postalCode: string
   city: string
-  phone?: string
-  website?: string
-  rating?: number
-  reviewCount?: number
+  phone?: string | null
+  website?: string | null
+  rating?: number | null
+  reviewCount?: number | null
   latitude?: number
   longitude?: number
   services?: string[]

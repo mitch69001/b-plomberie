@@ -13,7 +13,7 @@ interface ApiCity {
   codeDepartement: string
   codeRegion: string
   codesPostaux: string[]
-  population?: number
+  population?: number | null
   centre?: {
     coordinates: [number, number]
   }

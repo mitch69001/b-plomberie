@@ -11,10 +11,10 @@ export interface BusinessData {
   address: string
   postalCode: string
   city: string
-  phone?: string
-  website?: string
-  rating?: number
-  reviewCount?: number
+  phone?: string | null
+  website?: string | null
+  rating?: number | null
+  reviewCount?: number | null
   latitude?: number
   longitude?: number
   services?: string[]
@@ -41,7 +41,7 @@ export class DataForSEOScraper {
     cityName: string,
     postalCode: string,
     latitude: number,
-    longitude: number
+    longitude: number | null
   ): Promise<BusinessData[]> {
     console.log(`\n🔍 DataForSEO: Scraping pour ${cityName} (${postalCode})...`)
     
@@ -86,7 +86,7 @@ export class DataForSEOScraper {
   private async searchGoogleMaps(
     keyword: string,
     latitude: number,
-    longitude: number
+    longitude: number | null
   ): Promise<BusinessData[]> {
     // Paramètres de recherche SERP Google Maps
     const postData = [{

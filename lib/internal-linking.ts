@@ -12,8 +12,8 @@ interface City {
   postalCode: string
   department: string
   region: string
-  latitude: number
-  longitude: number
+  latitude: number | null
+  longitude: number | null
   population?: number | null
 }
 

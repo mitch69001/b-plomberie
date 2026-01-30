@@ -236,7 +236,7 @@ async function scrapeWithCustomKeyword(
   cityName: string,
   postalCode: string,
   latitude: number,
-  longitude: number
+  longitude: number | null
 ): Promise<BusinessData[]> {
   const fullKeyword = `${keyword} ${cityName}`
   const scraperAny = scraper as any
