@@ -36,9 +36,9 @@ async function analyzeWordCount() {
     const localAdvantagesWords = countWords(content.localAdvantagesText)
     const whyRGEWords = countWords(content.whyRGEText)
     const processWords = countWords(content.processText)
-    const linkingWords = countWords(stripHtml(content.internalLinkingText))
+    // const linkingWords = countWords(stripHtml(content.internalLinkingText))
     
-    const totalWords = introWords + localAdvantagesWords + whyRGEWords + processWords + linkingWords
+    const totalWords = introWords + localAdvantagesWords + whyRGEWords + processWords // + linkingWords
     
     console.log(`\n🏙️  ${city.name} (${city.region})`)
     console.log('-'.repeat(80))
@@ -46,7 +46,7 @@ async function analyzeWordCount() {
     console.log(`  Avantages locaux:       ${localAdvantagesWords.toString().padStart(4)} mots`)
     console.log(`  Pourquoi RGE:           ${whyRGEWords.toString().padStart(4)} mots`)
     console.log(`  Processus:              ${processWords.toString().padStart(4)} mots`)
-    console.log(`  Maillage interne:       ${linkingWords.toString().padStart(4)} mots`)
+    // console.log(`  Maillage interne:       ${linkingWords.toString().padStart(4)} mots`)
     console.log(`  ${'─'.repeat(40)}`)
     console.log(`  TOTAL:                  ${totalWords.toString().padStart(4)} mots`)
     
