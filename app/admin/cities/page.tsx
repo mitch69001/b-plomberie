@@ -23,7 +23,7 @@ export default function CitiesAdmin() {
   const [cities, setCities] = useState<City[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<'all' | 'with-businesses' | 'without-businesses' | 'custom-seo'>('all')
+  const [filter, setFilter] = useState<'all' | 'with-businesses' | 'without-businesses' | 'custom-seo' | 'no-custom-seo'>('all')
   const [selectedCities, setSelectedCities] = useState<string[]>([])
 
   useEffect(() => {
