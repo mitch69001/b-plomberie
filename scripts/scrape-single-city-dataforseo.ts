@@ -78,7 +78,6 @@ async function scrapeSingleCity(citySlug: string) {
               postalCode: business.postalCode || city.postalCode,
               cityId: city.id,
               phone: business.phone,
-              email: business.email,
               website: business.website,
               rating: business.rating,
               reviewCount: business.reviewCount,
