@@ -6,7 +6,7 @@ interface City {
   postalCode: string
   department: string
   region: string
-  population?: number
+  population?: number | null
 }
 
 interface ContentTemplate {
