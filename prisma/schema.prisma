@@ -1,0 +1,236 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model City {
+  id              String     @id @default(cuid())
+  name            String
+  slug            String     @unique
+  postalCode      String
+  department      String
+  region          String
+  population      Int?
+  latitude        Float
+  longitude       Float
+  businesses      Business[]
+  leads           Lead[]
+  metaData        String?    // JSON stored as string for SQLite compatibility
+  // SEO customizable fields
+  customTitle       String?
+  customDescription String?
+  customContent     String?  // Custom intro or content for the page
+  seoEnabled        Boolean  @default(true)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([slug])
+  @@index([department])
+  @@index([region])
+  @@index([postalCode])
+}
+
+model Business {
+  id           String   @id @default(cuid())
+  name         String
+  address      String
+  postalCode   String
+  city         City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  cityId       String
+  phone        String?
+  email        String?
+  website      String?
+  rating       Float?
+  reviewCount  Int?
+  latitude     Float?
+  longitude    Float?
+  openingHours String?  // JSON stored as string for SQLite compatibility
+  services     String?  // Comma-separated list for SQLite compatibility
+  scraped      Boolean  @default(false)
+  verified     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([cityId])
+  @@index([verified])
+  @@index([scraped])
+}
+
+model Lead {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String
+  city        City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  cityId      String
+  postalCode  String
+  projectType String
+  message     String?
+  budget      String?
+  surface     Int?
+  status      String   @default("nouveau")
+  source      String
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([cityId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Hashed password
+  name      String
+  role      String   @default("admin") // admin, super_admin
+  active    Boolean  @default(true)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model ScrapingLog {
+  id          String   @id @default(cuid())
+  cityId      String?
+  cityName    String
+  status      String   // success, error, partial
+  itemsFound  Int      @default(0)
+  itemsSaved  Int      @default(0)
+  duration    Int?     // in milliseconds
+  error       String?
+  metadata    String?  // JSON stored as string for SQLite compatibility
+  createdAt   DateTime @default(now())
+
+  @@index([cityId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Region {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  slug        String       @unique
+  description String?
+  departments Department[]
+  active      Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([slug])
+  @@index([name])
+}
+
+model Department {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  code      String?  // Code département (ex: "75", "13")
+  region    Region   @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  regionId  String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([regionId])
+  @@index([name])
+}
+
+model Page {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  content         String   // Contenu en markdown ou HTML
+  metaTitle       String?
+  metaDescription String?
+  category        String   // "legal", "resource", "other"
+  published       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([slug])
+  @@index([category])
+  @@index([published])
+}
+
+// ============================================
+// GÉNÉRATEUR MULTI-SITES
+// ============================================
+
+model GeneratedSite {
+  id                String   @id @default(cuid())
+  
+  // Identité du site
+  name              String   @unique
+  domain            String   @unique
+  theme             String
+  
+  // Configuration métier
+  businessType      String
+  businessTypePlural String
+  keywords          Json     // String[]
+  certification     String?
+  
+  // Scraping
+  scrapingKeywords  Json     // String[]
+  
+  // Contenu
+  heroTitle         String
+  heroSubtitle      String
+  metaDescription   String
+  faqQuestions      Json     // FAQItem[]
+  
+  // Branding
+  primaryColor      String   @default("#3b82f6")
+  secondaryColor    String   @default("#f97316")
+  logoUrl           String?
+  faviconUrl        String?
+  
+  // Infrastructure
+  githubRepoUrl     String?
+  vercelProjectId   String?
+  vercelUrl         String?
+  supabaseUrl       String?
+  supabaseKey       String?  @db.Text
+  
+  // État
+  status            String   @default("draft")  // draft, generating, deployed, error
+  createdAt         DateTime @default(now())
+  deployedAt        DateTime?
+  updatedAt         DateTime @updatedAt
+  
+  // Relations
+  generationLogs    GenerationLog[]
+  
+  @@index([status])
+  @@index([theme])
+  @@index([createdAt])
+}
+
+model GenerationLog {
+  id        String   @id @default(cuid())
+  site      GeneratedSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId    String
+  step      String
+  status    String   // pending, success, error
+  message   String?  @db.Text
+  error     String?  @db.Text
+  createdAt DateTime @default(now())
+  
+  @@index([siteId])
+  @@index([createdAt])
+  @@index([status])
+}
